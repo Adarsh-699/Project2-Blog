@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Comment on blog post</title>
+{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <h1>Comment on blog post...</h1>
+        <div class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-dark">Comment</button>
+            </form>
+        </div>
+    {% else %}
+        You cannot access this page!!
+    {% endif %}
+    
+{% endblock %}

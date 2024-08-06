@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<br>
+
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-12 col-xl-4">
+
+        <div class="card" style="border-radius: 15px;">
+          <div class="card-body text-center">
+            <div class="mt-3 mb-4">
+              {% if page_user.profile_pic %}
+                <img src="{{ page_user.profile_pic.url }}" class="rounded-circle img-fluid" style="width: 100px;">
+              {% else %}
+                <img src="{% static 'blogapp/images/default_profile_pic.jpg' %}" class="rounded-circle img-fluid" style="width: 100px;">
+              {% endif %}
+            </div>
+            <h4 class="mb-2">{{ page_user.user.first_name }} {{ page_user.user.last_name }}</h4>
+            <p class="text-muted mb-4">@{{ page_user.user.username }}</p>
+            <p class="text-muted mb-4">{{ page_user.user.profile.bio }}</p>
+            <div class="mb-4 pb-2">
+              {% if page_user.user.profile.website_url %}
+                <button type="button" class="btn btn-outline-primary btn-floating">
+                  <a href="{{ page_user.website_url }}"><i class="bi bi-browser-chrome"></i></a>
+                </button>
+              {% endif %}
+              {% if page_user.user.profile.linkedin_url %}
+                <button type="button" class="btn btn-outline-primary btn-floating">
+                  <a href="{{ page_user.linkedin_url }}"><i class="bi bi-linkedin"></i></a>
+                </button>
+              {% endif %}
+              {% if page_user.user.profile.instagram_url %}
+                <button type="button" class="btn btn-outline-primary btn-floating">
+                  <a href="{{ page_user.instagram_url }}"><i class="bi bi-instagram"></i></a>
+                </button>
+              {% endif %}
+              {% if page_user.user.profile.twitter_url %}
+                <button type="button" class="btn btn-outline-primary btn-floating">
+                  <a href="{{ page_user.twitter_url }}"><i class="bi bi-twitter"></i></a>
+                </button>
+              {% endif %}
+              {% if page_user.user.profile.facebook_url %}
+                <button type="button" class="btn btn-outline-primary btn-floating">
+                  <a href="{{ page_user.facebook_url }}"><i class="bi bi-facebook"></i></a>
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+<hr>
+<br>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        
+      {% for post in blog_post %}
+
+      <div class="col">
+        <div class="card">
+          {% if post.header_image %}
+              <img src="{{ post.header_image.url }}" class="object-fit-contain border rounded card-img-top" height="220">
+          {% else %}
+              <img src="{% static 'blogapp/images/no_image.png' %}" class="card-img-top">
+          {% endif %}
+          <div class="card-body">
+            <h6 class="card-title">{{ post.title }}</h6>
+            <p class="card-text">{{ post.snippet }}</p>
+            <a href="{% url 'article_detail' post.pk %}">more...</a><br>
+          {% if user.is_authenticated %}
+              {% if user.id == post.author.id %}
+                  <a href="{% url 'update_post' post.pk %}"><i class="bi bi-pencil-square" style="color: blue;"></i></a>
+                  | <a href="{% url 'delete_post' post.pk %}"><i class="bi bi-trash3-fill" style="color: red;"></i></a>
+              {% endif %}
+          {% endif %}
+          
+          </div>
+          <div class="card-footer">
+            <a href="{% url 'show_profile_page' post.author.profile.id %}" style="text-decoration: none;">
+              {% if post.author.profile.profile_pic %}
+                <img src="{{ post.author.profile.profile_pic.url }}" class="img-fluid rounded-circle me-0" width="25">
+              {% else %}
+                <img src="{% static 'blogapp/images/default_profile_pic.jpg' %}" class="img-fluid rounded-circle me-0" width="25">
+              {% endif %}             
+              <small class="text-body-secondary">{{ post.author.username }}</small>
+            </a>
+              | <small><a href="{% url 'category' post.category|slugify %}">{{ post.category }}</a></small>
+              | <small>{{ post.post_date|date }}</small>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+
+    </div>
+
+  
+{% endblock %}

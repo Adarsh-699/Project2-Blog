@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>Blog</h1>
+
+    <br>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        
+        {% for post in object_list %}
+
+        <div class="col">
+          <div class="card">
+            {% if post.header_image %}
+                <img src="{{ post.header_image.url }}" class="object-fit-contain border rounded card-img-top" height="220">
+            {% else %}
+                <img src="{% static 'blogapp/images/no_image.png' %}" class="card-img-top">
+            {% endif %}
+            <div class="card-body">
+              <h6 class="card-title">{{ post.title }}</h6>
+              <p class="card-text">{{ post.snippet }}</p>
+              <a href="{% url 'article_detail' post.pk %}">more...</a><br>
+            {% if user.is_authenticated %}
+                {% if user.id == post.author.id %}
+                    <a href="{% url 'update_post' post.pk %}"><i class="bi bi-pencil-square" style="color: blue;"></i></a>
+                    | <a href="{% url 'delete_post' post.pk %}"><i class="bi bi-trash3-fill" style="color: red;"></i></a>
+                {% endif %}
+            {% endif %}
+            
+            </div>
+            <div class="card-footer">
+              <a href="{% url 'show_profile_page' post.author.profile.id %}" style="text-decoration: none;">
+                {% if post.author.profile.profile_pic %}
+                  <img src="{{ post.author.profile.profile_pic.url }}" class="img-fluid rounded-circle me-0" width="25">
+                {% else %}
+                  <img src="{% static 'blogapp/images/default_profile_pic.jpg' %}" class="img-fluid rounded-circle me-0" width="25">
+                {% endif %}             
+                <small class="text-body-secondary">{{ post.author.username }}</small>
+              </a>
+                | <small><a href="{% url 'category' post.category|slugify %}">{{ post.category }}</a></small>
+                | <small>{{ post.post_date|date }}</small>
+            </div>
+          </div>
+        </div>
+
+        {% endfor %}
+
+      </div>
+
+     <br><br>
+
+{% endblock %}
